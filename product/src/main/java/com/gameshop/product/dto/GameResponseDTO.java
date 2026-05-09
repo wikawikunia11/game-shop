@@ -1,13 +1,17 @@
 package com.gameshop.product.dto;
 
 import com.gameshop.product.model.AgeRestriction;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class GameResponseDTO {
     private Long id;
     private String title;
