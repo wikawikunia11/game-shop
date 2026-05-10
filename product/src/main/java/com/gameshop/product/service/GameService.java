@@ -68,7 +68,10 @@ public class GameService {
         game.setReleaseDate(gameRequest.getReleaseDate());
         game.setAgeRestriction(gameRequest.getAgeRestriction());
 
-        Set<Genre> genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        Set <Genre> genres = new HashSet<>();
+        if(gameRequest.getGenres() != null && !gameRequest.getGenres().isEmpty()) {
+            genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        }
         game.setGenres(genres);
         return toGameResponseDTO(gameRepository.save(game));
     }
@@ -84,7 +87,10 @@ public class GameService {
         game.setReleaseDate(gameRequest.getReleaseDate());
         game.setAgeRestriction(gameRequest.getAgeRestriction());
 
-        Set<Genre> genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        Set <Genre> genres = new HashSet<>();
+        if(gameRequest.getGenres() != null && !gameRequest.getGenres().isEmpty()) {
+            genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        }
         game.setGenres(genres);
 
         return toGameResponseDTO(gameRepository.save(game));
@@ -99,10 +105,6 @@ public class GameService {
 
     public List<GameResponseDTO> searchGamesByPhrase(String phrase){
          List<Game> games = gameRepository.findAllByTitleContainingIgnoreCase(phrase);
-
-         if(games.isEmpty()){
-             throw new RuntimeException("No Game found containing: " + phrase);
-         }
 
         return games.stream()
                 .map(GameService::toGameResponseDTO)
