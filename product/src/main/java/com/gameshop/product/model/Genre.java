@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
+@Builder
 @Table(name = "genres")
 public class Genre {
 
@@ -15,7 +15,6 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull // for required args constructor
     @Column(nullable = false, unique = true)
     private String name;
 }

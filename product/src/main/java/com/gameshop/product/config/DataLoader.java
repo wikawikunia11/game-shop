@@ -14,10 +14,10 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args){
         if(genreRepository.count() == 0){
-            genreRepository.save(new Genre("Action"));
-            genreRepository.save(new Genre("Survival"));
-            genreRepository.save(new Genre("RPG"));
-            genreRepository.save(new Genre("Strategy"));
+            genreRepository.save( Genre.builder().name("Action").build());
+            genreRepository.save( Genre.builder().name("Survival").build());
+            genreRepository.save( Genre.builder().name("RPG").build());
+            genreRepository.save( Genre.builder().name("Strategy").build());
         }
     }
 }
