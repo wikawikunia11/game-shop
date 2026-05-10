@@ -11,9 +11,8 @@ services:
 
   product-service:
     build:
-      context: ./product
       dockerfile: Dockerfile
-    container_name: gameshop-product
+    container_name: gameshop
     env_file:
       - .env
     ports:
