@@ -9,6 +9,7 @@ import com.gameshop.product.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,6 +108,34 @@ public class GameService {
          List<Game> games = gameRepository.findAllByTitleContainingIgnoreCase(phrase);
 
         return games.stream()
+                .map(GameService::toGameResponseDTO)
+                .toList();
+    }
+
+    public List<GameResponseDTO> getGamesByGenre(String genre){
+        return gameRepository.findByGenres_NameIgnoreCase(genre)
+                .stream()
+                .map(GameService::toGameResponseDTO)
+                .toList();
+    }
+
+    public List<GameResponseDTO> getGamesByDeveloper(String developer){
+        return gameRepository.findByDeveloperIgnoreCase(developer)
+                .stream()
+                .map(GameService::toGameResponseDTO)
+                .toList();
+    }
+
+    public List<GameResponseDTO> getReleasedGames(){
+        return gameRepository.findByReleaseDateBefore(LocalDate.now())
+                .stream()
+                .map(GameService::toGameResponseDTO)
+                .toList();
+    }
+
+    public List<GameResponseDTO> findByAllGenres(List<String> genres) {
+        return gameRepository.findByAllGenres(genres, genres.size())
+                .stream()
                 .map(GameService::toGameResponseDTO)
                 .toList();
     }

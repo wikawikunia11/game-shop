@@ -82,4 +82,36 @@ public class GameController {
             HttpStatus.NO_CONTENT
         );
     }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<GameResponseDTO>> getByGenre(@PathVariable String genre) {
+        return new ResponseEntity<>(
+                gameService.getGamesByGenre(genre),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/developer/{developer}")
+    public ResponseEntity<List<GameResponseDTO>> getByDeveloper(@PathVariable String developer) {
+        return new ResponseEntity<>(
+                gameService.getGamesByDeveloper(developer),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/released")
+    public ResponseEntity<List<GameResponseDTO>> getReleased() {
+        return new ResponseEntity<>(
+                gameService.getReleasedGames(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<List<GameResponseDTO>> getByAllGenres(@RequestParam List<String> genres) {
+        return new ResponseEntity<>(
+                gameService.findByAllGenres(genres),
+                HttpStatus.OK
+        );
+    }
 }
