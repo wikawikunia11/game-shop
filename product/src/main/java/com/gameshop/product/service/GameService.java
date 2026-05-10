@@ -68,7 +68,10 @@ public class GameService {
         game.setReleaseDate(gameRequest.getReleaseDate());
         game.setAgeRestriction(gameRequest.getAgeRestriction());
 
-        Set<Genre> genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        Set <Genre> genres = new HashSet<>();
+        if(gameRequest.getGenres() != null && !gameRequest.getGenres().isEmpty()) {
+            genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        }
         game.setGenres(genres);
         return toGameResponseDTO(gameRepository.save(game));
     }
@@ -84,7 +87,10 @@ public class GameService {
         game.setReleaseDate(gameRequest.getReleaseDate());
         game.setAgeRestriction(gameRequest.getAgeRestriction());
 
-        Set<Genre> genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        Set <Genre> genres = new HashSet<>();
+        if(gameRequest.getGenres() != null && !gameRequest.getGenres().isEmpty()) {
+            genres = new HashSet<>(genreRepository.findAllById(gameRequest.getGenres()));
+        }
         game.setGenres(genres);
 
         return toGameResponseDTO(gameRepository.save(game));
