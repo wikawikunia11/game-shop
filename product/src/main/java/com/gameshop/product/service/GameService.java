@@ -106,10 +106,6 @@ public class GameService {
     public List<GameResponseDTO> searchGamesByPhrase(String phrase){
          List<Game> games = gameRepository.findAllByTitleContainingIgnoreCase(phrase);
 
-         if(games.isEmpty()){
-             throw new RuntimeException("No Game found containing: " + phrase);
-         }
-
         return games.stream()
                 .map(GameService::toGameResponseDTO)
                 .toList();
