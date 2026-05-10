@@ -26,7 +26,7 @@ public class GameController {
     }
 
     // URL .../search?title=a b c - can have whitespaces
-    @GetMapping("/search")
+    @GetMapping("/search/exact")
     public ResponseEntity<GameResponseDTO> getGameByTitle(@RequestParam String title){
         return new ResponseEntity<>(
           gameService.getGameByTitle(title),
@@ -40,6 +40,21 @@ public class GameController {
                 gameService.getGameById(id),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchGamesByPhrase(@RequestParam String phrase){
+        try {
+            return new ResponseEntity<>(
+                    gameService.searchGamesByPhrase(phrase),
+                    HttpStatus.OK
+            );
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(
+                    e.getMessage(),
+                    HttpStatus.NOT_FOUND
+            );
+        }
     }
 
     @PostMapping
