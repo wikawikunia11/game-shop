@@ -15,3 +15,7 @@ spring:
 
 server:
   port: 8081
+
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}

@@ -10,9 +10,6 @@ jobs:
 
   test-product:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: product
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,14 +25,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
+        env:
+          ADMIN_USERNAME: test-admin
+          ADMIN_PASSWORD: test-password
         run: ./gradlew test
 
   build-product:
     runs-on: ubuntu-latest
     needs: test-product
-    defaults:
-      run:
-        working-directory: product
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,4 +48,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Product
-        run: ./gradlew build -x test # for now without tests
+        env:
+          ADMIN_USERNAME: build-admin
+          ADMIN_PASSWORD: build-password
+        run: ./gradlew build -x test
