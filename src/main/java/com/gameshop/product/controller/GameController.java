@@ -2,6 +2,7 @@ package com.gameshop.product.controller;
 
 import com.gameshop.product.dto.GameRequestDTO;
 import com.gameshop.product.dto.GameResponseDTO;
+import com.gameshop.product.model.AgeRestriction;
 import com.gameshop.product.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -111,6 +112,15 @@ public class GameController {
     public ResponseEntity<List<GameResponseDTO>> getByAllGenres(@RequestParam List<String> genres) {
         return new ResponseEntity<>(
                 gameService.findByAllGenres(genres),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/age/{restriction}")
+    public ResponseEntity<List<GameResponseDTO>> getByAgeRestriction(
+            @PathVariable AgeRestriction restriction) {
+        return new ResponseEntity<>(
+                gameService.getGamesByAgeRestriction(restriction),
                 HttpStatus.OK
         );
     }

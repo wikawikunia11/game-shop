@@ -2,6 +2,7 @@ package com.gameshop.product.service;
 
 import com.gameshop.product.dto.GameRequestDTO;
 import com.gameshop.product.dto.GameResponseDTO;
+import com.gameshop.product.model.AgeRestriction;
 import com.gameshop.product.model.Game;
 import com.gameshop.product.model.Genre;
 import com.gameshop.product.repository.GameRepository;
@@ -135,6 +136,13 @@ public class GameService {
 
     public List<GameResponseDTO> findByAllGenres(List<String> genres) {
         return gameRepository.findByAllGenres(genres, genres.size())
+                .stream()
+                .map(GameService::toGameResponseDTO)
+                .toList();
+    }
+
+    public List<GameResponseDTO> getGamesByAgeRestriction(AgeRestriction ageRestriction) {
+        return gameRepository.findByAgeRestriction(ageRestriction)
                 .stream()
                 .map(GameService::toGameResponseDTO)
                 .toList();

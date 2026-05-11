@@ -1,5 +1,6 @@
 package com.gameshop.product.repository;
 
+import com.gameshop.product.model.AgeRestriction;
 import com.gameshop.product.model.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findByGenres_NameIgnoreCase(String genre);
     List<Game> findByDeveloperIgnoreCase(String developer);
     List<Game> findByReleaseDateBefore(LocalDate date);
+    List<Game> findByAgeRestriction(AgeRestriction ageRestriction);
 
     //  g2 = g need to remember to count only this games genres !!
     @Query("""
