@@ -3,6 +3,7 @@ import com.gameshop.product.dto.GameRequestDTO;
 import com.gameshop.product.dto.GameResponseDTO;
 import com.gameshop.product.model.AgeRestriction;
 import com.gameshop.product.model.Game;
+import com.gameshop.product.model.Genre;
 import com.gameshop.product.repository.GameRepository;
 import com.gameshop.product.repository.GenreRepository;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -230,4 +233,124 @@ public class GameServiceTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    public void getGamesByGenre_ReturnsGameList() {
+        String genre = "RPG";
+        Game game = Game.builder()
+                .title("Cyberpunk 2077")
+                .developer("CD PROJECT RED")
+                .publisher("CD PROJECT RED")
+                .ageRestriction(AgeRestriction.PEGI_18)
+                .genres(Set.of(Genre.builder().name("RPG").build()))
+                .price(new BigDecimal("99.99"))
+                .build();
+        when(gameRepository.findByGenres_NameIgnoreCase(genre)).thenReturn(List.of(game));
+
+        List<GameResponseDTO> result = gameService.getGamesByGenre(genre);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getTitle()).isEqualTo("Cyberpunk 2077");
+        assertThat(result.getFirst().getGenres()).contains(genre);
+        Mockito.verify(gameRepository).findByGenres_NameIgnoreCase(genre);
+    }
+
+    @Test
+    public void getGamesByGenre_ReturnsEmptyList() {
+        String genre = "Action";
+        when(gameRepository.findByGenres_NameIgnoreCase(genre)).thenReturn(List.of());
+
+        List<GameResponseDTO> result = gameService.getGamesByGenre(genre);
+
+        assertThat(result).isEmpty();
+        Mockito.verify(gameRepository).findByGenres_NameIgnoreCase(genre);
+    }
+
+    @Test
+    public void getGamesByDeveloper_ReturnsList() {
+        String dev = "CD PROJECT RED";
+        Game game = createGameSample(1L, "Cyberpunk 2077");
+        when(gameRepository.findByDeveloperIgnoreCase(dev)).thenReturn(List.of(game));
+
+        List<GameResponseDTO> result = gameService.getGamesByDeveloper(dev);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getDeveloper()).isEqualTo(dev);
+        Mockito.verify(gameRepository).findByDeveloperIgnoreCase(dev);
+    }
+
+    @Test
+    public void getReleasedGames_ReturnsList() {
+        Game releasedGame = Game.builder()
+                .title("Cyberpunk 2077")
+                .developer("CD PROJECT RED")
+                .publisher("CD PROJECT RED")
+                .ageRestriction(AgeRestriction.PEGI_18)
+                .releaseDate(LocalDate.of(2020,12,10))
+                .genres(Set.of(Genre.builder().name("RPG").build()))
+                .price(new BigDecimal("99.99"))
+                .build();
+        // uses LocalDate.now() -> mock any date is fine
+        when(gameRepository.findByReleaseDateBefore(Mockito.any(java.time.LocalDate.class)))
+                .thenReturn(List.of(releasedGame));
+
+        List<GameResponseDTO> result = gameService.getReleasedGames();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getTitle()).isEqualTo("Cyberpunk 2077");
+        Mockito.verify(gameRepository).findByReleaseDateBefore(Mockito.any(java.time.LocalDate.class));
+    }
+
+    @Test
+    public void findByAllGenres_ReturnsList() {
+        List<String> genres = List.of("Action", "RPG");
+        Game game = Game.builder()
+                .title("Cyberpunk 2077")
+                .developer("CD PROJECT RED")
+                .publisher("CD PROJECT RED")
+                .ageRestriction(AgeRestriction.PEGI_18)
+                .genres(Set.of(
+                        Genre.builder().name("Action").build(),
+                        Genre.builder().name("RPG").build(),
+                        Genre.builder().name("Shooter").build()
+                ))
+                .price(new BigDecimal("99.99"))
+                .build();
+
+        when(gameRepository.findByAllGenres(genres, genres.size())).thenReturn(List.of(game));
+
+        List<GameResponseDTO> result = gameService.findByAllGenres(genres);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getTitle()).isEqualTo("Cyberpunk 2077");
+        assertThat(result.getFirst().getGenres()).containsAll(genres);
+        Mockito.verify(gameRepository).findByAllGenres(genres, genres.size());
+    }
+
+    @Test
+    public void findByAllGenres_ReturnsEmptyList_WhenNoMatch() {
+        List<String> genres = List.of("Action", "Horror");
+        when(gameRepository.findByAllGenres(genres, genres.size())).thenReturn(List.of());
+
+        List<GameResponseDTO> result = gameService.findByAllGenres(genres);
+
+        assertThat(result).isEmpty();
+        Mockito.verify(gameRepository).findByAllGenres(genres, genres.size());
+    }
+
+    @Test
+    public void getGamesByAgeRestriction_ReturnsList() {
+        AgeRestriction restriction = AgeRestriction.PEGI_18;
+        Game game = createGameSample(1L, "Witcher 3");
+        game.setAgeRestriction(restriction);
+
+        when(gameRepository.findByAgeRestriction(restriction)).thenReturn(List.of(game));
+
+        List<GameResponseDTO> result = gameService.getGamesByAgeRestriction(restriction);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getAgeRestriction()).isEqualTo(restriction);
+        Mockito.verify(gameRepository).findByAgeRestriction(restriction);
+    }
+
 }

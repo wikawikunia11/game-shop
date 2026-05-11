@@ -2,6 +2,7 @@ package com.gameshop.product.controller;
 
 import com.gameshop.product.dto.GameRequestDTO;
 import com.gameshop.product.dto.GameResponseDTO;
+import com.gameshop.product.model.AgeRestriction;
 import com.gameshop.product.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,47 @@ public class GameController {
         gameService.deleteGame(id);
         return new ResponseEntity<>(
             HttpStatus.NO_CONTENT
+        );
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<GameResponseDTO>> getByGenre(@PathVariable String genre) {
+        return new ResponseEntity<>(
+                gameService.getGamesByGenre(genre),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/developer/{developer}")
+    public ResponseEntity<List<GameResponseDTO>> getByDeveloper(@PathVariable String developer) {
+        return new ResponseEntity<>(
+                gameService.getGamesByDeveloper(developer),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/released")
+    public ResponseEntity<List<GameResponseDTO>> getReleased() {
+        return new ResponseEntity<>(
+                gameService.getReleasedGames(),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<List<GameResponseDTO>> getByAllGenres(@RequestParam List<String> genres) {
+        return new ResponseEntity<>(
+                gameService.findByAllGenres(genres),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/age/{restriction}")
+    public ResponseEntity<List<GameResponseDTO>> getByAgeRestriction(
+            @PathVariable AgeRestriction restriction) {
+        return new ResponseEntity<>(
+                gameService.getGamesByAgeRestriction(restriction),
+                HttpStatus.OK
         );
     }
 }
