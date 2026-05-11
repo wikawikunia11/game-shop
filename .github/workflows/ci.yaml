@@ -1,0 +1,54 @@
+name: CI pipeline
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+
+  test-product:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Run tests
+        env:
+          ADMIN_USERNAME: test-admin
+          ADMIN_PASSWORD: test-password
+        run: ./gradlew test
+
+  build-product:
+    runs-on: ubuntu-latest
+    needs: test-product
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Build Product
+        env:
+          ADMIN_USERNAME: build-admin
+          ADMIN_PASSWORD: build-password
+        run: ./gradlew build -x test
